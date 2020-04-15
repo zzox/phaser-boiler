@@ -20,13 +20,13 @@ export default class PreloadScene extends Scene {
     })
 
     this.load.bitmapFont('font', 'src/assets/fonts/miniset.png', 'src/assets/fonts/miniset.fnt')
+    this.load.json('animations', 'src/assets/data/animations.json')
 
     this.animsArray = []
   }
 
   create () {
     const animations = this.cache.json.get('animations')
-    console.log(animations)
     this.createAnimations(animations)
 
     window.addEventListener('resize', () => {
@@ -38,7 +38,7 @@ export default class PreloadScene extends Scene {
       this.progressBar.destroy()
       this.progressBox.destroy()
       this.scene.start('ClickStart')
-    }, 3000)
+    }, 1500)
   }
 
   createAnimations (animations) {
@@ -68,15 +68,18 @@ export default class PreloadScene extends Scene {
   // method needed for pausing when moving away from screen
 
   resize () {
-    // TODO: setScale instead of scaling canvas, for safari.
-    const maxMulti = 100
+    document.body.style.overflow = 'hidden'
+
+    const maxMulti = 20
+    // overflow pixels
+    const padding = 1
     const w = 320
     const h = 180
     const availW = window.innerWidth
     const availH = window.innerHeight
     // - 20 for padding
-    const maxW = Math.floor(availW / w)
-    const maxH = Math.floor(availH / h)
+    const maxW = Math.floor(availW / (w - padding))
+    const maxH = Math.floor(availH / (h - padding))
     let multi = maxW < maxH ? maxW : maxH
 
     if (multi > maxMulti) multi = maxMulti
