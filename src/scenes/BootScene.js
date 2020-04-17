@@ -6,7 +6,7 @@ export default class BootScene extends Scene {
   }
 
   preload () {
-    this.load.image('zzoxLogo', 'src/assets/images/zzoxLogo.png')
+    this.load.image('zzoxLogo', 'assets/images/zzoxLogo.png')
   }
 
   create () {

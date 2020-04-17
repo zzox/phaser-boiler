@@ -1,6 +1,6 @@
 import { Scene } from 'phaser'
 
-class ClickStart extends Scene {
+export default class ClickStart extends Scene {
   constructor () {
     super({ key: 'ClickStart' })
   }
@@ -24,5 +24,3 @@ class ClickStart extends Scene {
     }
   }
 }
-
-export default ClickStart

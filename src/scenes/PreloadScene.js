@@ -19,8 +19,8 @@ export default class PreloadScene extends Scene {
       this.progressBar.clear().fillStyle(0xffffff).fillRect(135, 90, 50 * val, 1)
     })
 
-    this.load.bitmapFont('font', 'src/assets/fonts/miniset.png', 'src/assets/fonts/miniset.fnt')
-    this.load.json('animations', 'src/assets/data/animations.json')
+    this.load.bitmapFont('font', 'assets/fonts/miniset.png', 'assets/fonts/miniset.fnt')
+    this.load.json('animations', 'assets/data/animations.json')
 
     this.animsArray = []
   }

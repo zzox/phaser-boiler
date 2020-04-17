@@ -2,7 +2,7 @@ import { Game, WEBGL } from 'phaser'
 import BootScene from './scenes/BootScene'
 import PreloadScene from './scenes/PreloadScene'
 import ClickStart from './scenes/ClickStart'
-// import GameScene from './fishing/GameScene'
+import GameScene from './scenes/GameScene'
 
 const config = {
   type: WEBGL,
@@ -14,7 +14,6 @@ const config = {
   physics: {
     default: 'arcade',
     arcade: {
-      // debug: true, // switched off
       gravity: { y: 800 }
     }
   },
@@ -22,7 +21,7 @@ const config = {
     BootScene,
     PreloadScene,
     ClickStart,
-    // GameScene
+    GameScene
   ]
 }
 
