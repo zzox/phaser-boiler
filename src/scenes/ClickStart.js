@@ -20,7 +20,7 @@ export default class ClickStart extends Scene {
 
     if (this.input.activePointer.isDown) {
       this.start = true
-      this.scene.start('GameScene')
+      this.scene.start('GameScene', { level: 0 })
     }
   }
 }

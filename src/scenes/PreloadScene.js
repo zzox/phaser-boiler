@@ -21,6 +21,8 @@ export default class PreloadScene extends Scene {
 
     this.load.bitmapFont('font', 'assets/fonts/miniset.png', 'assets/fonts/miniset.fnt')
     this.load.json('animations', 'assets/data/animations.json')
+    this.load.text('levels', 'assets/data/levels.txt')
+    this.load.spritesheet('sprites', 'assets/images/sprites.png', { frameWidth: 16, frameHeight: 16, spacing: 2, margin: 1 })
 
     this.animsArray = []
   }
@@ -28,6 +30,9 @@ export default class PreloadScene extends Scene {
   create () {
     const animations = this.cache.json.get('animations')
     this.createAnimations(animations)
+
+    const levels = this.cache.text.get('levels')
+    this.parseLevels(levels)
 
     window.addEventListener('resize', () => {
       this.resize()
@@ -39,6 +44,73 @@ export default class PreloadScene extends Scene {
       this.progressBox.destroy()
       this.scene.start('ClickStart')
     }, 1500)
+  }
+
+  parseLevels (levelsText) {
+    const levels = []
+    let level = { items: [] }
+    let yIndex = 0
+
+    const levelsLines = levelsText.split('\n')
+    for (let i = 0; i < levelsLines.length; i++) {
+      let line = levelsLines[i]
+      line = line.trim()
+      
+      if (line === '\n') {
+        continue
+      }
+
+      if (line === '===') {
+        levels.push(level)
+        level = { items: [] }
+        continue
+      }
+
+      if (line === '~*~') {
+        yIndex = 0
+        continue
+      }
+
+      if (line === 'END') {
+        break
+      }
+
+      if (level.name) {
+        const items = line.split('')
+        for (let j = 0; j < items.length; j++) {
+          const item = items[j]
+          
+          if (item !== '.') {
+            level.items.push({ name: this.itemDict(item), x: j, y: yIndex })
+          }
+        }
+      } else {
+        // ugly
+        const data = line.split(':')
+        level.index = parseInt(data[0])
+        level.name = data[1]
+        level.tries = parseInt(data[2])
+      }
+
+      yIndex++
+    }
+
+    window.gameLevels = levels
+  }
+
+  itemDict (str) {
+    switch (str) {
+      case 'P':
+        return 'player'
+      case 'O':
+        return 'node-start'
+      case 'o':
+        return 'node-end'
+      case '-':
+        return 'left-right'
+      case 'x':
+        return 'supports'
+    }
   }
 
   createAnimations (animations) {
@@ -64,8 +136,6 @@ export default class PreloadScene extends Scene {
       })
     })
   }
-
-  // method needed for pausing when moving away from screen
 
   resize () {
     document.body.style.overflow = 'hidden'
