@@ -9,14 +9,14 @@ export default class PreloadScene extends Scene {
     this.resize()
 
     this.cameras.main.setBackgroundColor('#151515')
-    this.add.image(160, 80, 'zzoxLogo')
+    this.add.image(120, 65, 'zzoxLogo')
 
     this.progressBox = this.add.graphics()
-    this.progressBox.fillStyle(0x7b7b7b).fillRect(135, 90, 50, 1)
+    this.progressBox.fillStyle(0x7b7b7b).fillRect(95, 75, 50, 1)
     this.progressBar = this.add.graphics()
 
     this.load.on('progress', (val) => {
-      this.progressBar.clear().fillStyle(0xffffff).fillRect(135, 90, 50 * val, 1)
+      this.progressBar.clear().fillStyle(0xffffff).fillRect(95, 75, 50 * val, 1)
     })
 
     this.load.bitmapFont('font', 'assets/fonts/miniset.png', 'assets/fonts/miniset.fnt')
@@ -114,9 +114,10 @@ export default class PreloadScene extends Scene {
   }
 
   createAnimations (animations) {
-    this.animsArray.map(item => {
+    for (let item in animations) {
       let items
-      const alias = animations[item].alias
+      let it = animations[item]
+      let alias = animations[item].alias
 
       if (alias) {
         items = animations[alias].anims
@@ -124,7 +125,7 @@ export default class PreloadScene extends Scene {
         items = animations[item].anims
       }
 
-      items.map(anim => {
+      it.anims.map(anim => {
         this.anims.create({
           key: `${item}-${anim.key}`,
           //                                sheet vvv
@@ -134,7 +135,7 @@ export default class PreloadScene extends Scene {
           repeatDelay: anim.repeatDelay ? anim.repeatDelay : 0
         })
       })
-    })
+    }
   }
 
   resize () {
@@ -143,8 +144,8 @@ export default class PreloadScene extends Scene {
     const maxMulti = 20
     // overflow pixels
     const padding = 1
-    const w = 320
-    const h = 180
+    const w = 240
+    const h = 135
     const availW = window.innerWidth
     const availH = window.innerHeight
     // - 20 for padding

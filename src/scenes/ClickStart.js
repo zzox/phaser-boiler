@@ -6,7 +6,7 @@ export default class ClickStart extends Scene {
   }
 
   create () {
-    this.add.bitmapText(80, 80, 'font', 'Click screen to enable sound and input', 8)
+    this.add.bitmapText(40, 60, 'font', 'Click screen to enable sound and input', 8)
 
     this.start = false
 
