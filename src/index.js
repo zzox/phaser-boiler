@@ -7,8 +7,8 @@ import GameScene from './scenes/GameScene'
 const config = {
   type: WEBGL,
   parent: 'content',
-  width: 240,
-  height: 135,
+  width: 320,
+  height: 180,
   pixelArt: true,
   roundPixels: true,
   physics: {
