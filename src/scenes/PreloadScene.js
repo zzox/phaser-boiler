@@ -103,11 +103,11 @@ export default class PreloadScene extends Scene {
       case 'P':
         return 'player'
       case 'O':
-        return 'node-start'
+        return 'pipe-node-start'
       case 'o':
-        return 'node-end'
+        return 'pipe-node-end'
       case '-':
-        return 'left-right'
+        return 'pipe-left-right'
       case 'x':
         return 'supports'
     }
@@ -128,8 +128,7 @@ export default class PreloadScene extends Scene {
       it.anims.map(anim => {
         this.anims.create({
           key: `${item}-${anim.key}`,
-          //                                sheet vvv
-          frames: this.anims.generateFrameNumbers(item, anim.frames),
+          frames: this.anims.generateFrameNumbers('sprites', anim.frames),
           frameRate: anim.frameRate ? anim.frameRate : 1,
           repeat: anim.repeat || anim.repeat === 0 ? anim.repeat : -1,
           repeatDelay: anim.repeatDelay ? anim.repeatDelay : 0
