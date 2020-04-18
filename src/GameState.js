@@ -3,6 +3,7 @@ const GAME_WIDTH = 15
 const TOP_OFFSET = 7
 const GRID_ITEM_SIZE = 16
 const GRID_ITEM_OFFSET = 8
+const SHOCK_DELAY = 66
 
 export default class GameState {
   constructor ({ items, tries }, scene) {
@@ -16,6 +17,7 @@ export default class GameState {
     this.player = null
     this.tries = tries
     this.moves = 0
+    this.won = false
     this.createGrid()
     console.log(this.gridItems)
     this.createItems(items)
@@ -30,12 +32,13 @@ export default class GameState {
       this.moves++
     }
 
+    this.checkVoltage()
     // gravity effects
     // check shock
       // win/shock condition
     // lose if moves are up
 
-    if (this.moves === this.tries) {
+    if (this.moves === this.tries && !this.won) {
       alert('lost!')
     }
   }
@@ -43,27 +46,7 @@ export default class GameState {
   move (item, dir) {
     const { x, y } = item
 
-    let newX, newY
-    switch (dir) {
-      case 'up':
-        newX = x
-        newY = y - 1
-        break
-      case 'down':
-        newX = x
-        newY = y + 1
-        break
-      case 'left':
-        newX = x - 1
-        newY = y
-        break
-      case 'right':
-        newX = x + 1
-        newY = y
-        break
-      default:
-        throw new Error('No dir in State.move()')
-    }
+    const { x: newX, y: newY } = getDirXAndY(dir, x, y)
 
     console.log(newX, newY)
     const tile = this.getItemAt(newX, newY)
@@ -104,6 +87,51 @@ export default class GameState {
     return this.gridItems[x][y]
   }
 
+  checkVoltage () {
+    let curr = this.startNode
+    let currDir = this.startNode.dirs[0]
+    let items = [curr.sprite]
+
+    while (true) {
+      const inverse = getInverse(currDir)
+      const { x: newX, y: newY } = getDirXAndY(currDir, curr.x, curr.y)
+      const toTile = this.getItemAt(newX, newY)
+
+      if (toTile && toTile.item && toTile.item.dirs && toTile.item.dirs.includes(inverse)) {
+        curr = toTile.item
+        items.push(curr.sprite)
+
+        if (curr.end) {
+          this.win(items)
+          return
+        } else {
+          currDir = toTile.item.dirs.find(it => it !== inverse)
+        }
+      } else {
+        break
+      }
+    }
+
+    console.log('here')
+    this.sendShocks(items)
+  }
+
+  sendShocks (items, won = false) {
+    items.map((item, i) => {
+      if (won) {
+        item.shockRepeat(i * SHOCK_DELAY)
+      } else {
+        item.shock(i * SHOCK_DELAY)
+      }
+    })
+  }
+
+  win (items) {
+    this.sendShocks(items, true)
+    this.won = true
+    alert('won')
+  }
+
   createItems (items) {
     items.map(({ name, x, y }) => {
       const { xPos, yPos } = this.gridItems[x][y]
@@ -138,6 +166,14 @@ export default class GameState {
               movable: false,
               canDie: false,
               gravity: false
+            }
+            if (name.split('-')[2] === 'start') {
+              item.dirs = ['right']
+              this.startNode = item
+            } else {
+              item.dirs = ['left']
+              item.end = true
+              this.endNode = item
             }
           } else {
             item = {
@@ -183,6 +219,17 @@ export default class GameState {
   }
 }
 
+const getDirXAndY = (dir, x, y) => {
+  switch (dir) {
+    case 'up': return { x, y: y - 1 }
+    case 'down': return { x, y: y + 1 }
+    case 'left': return { x: x - 1, y }
+    case 'right': return { x: x + 1, y }
+    default:
+      throw new Error('No dir in State.move()')
+  }
+}
+
 const spriteData = (name) => {
   switch (name.split('-')[0]) {
     case 'pipe':
@@ -200,5 +247,14 @@ const spriteData = (name) => {
         canShock: true,
         anim: `${name}-idle`
       }
+  }
+}
+
+const getInverse = (str) => {
+  switch (str) {
+    case 'up': return 'down'
+    case 'down': return 'up'
+    case 'left': return 'right'
+    case 'right': return 'left'
   }
 }

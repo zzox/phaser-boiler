@@ -3,8 +3,8 @@
     "anims": [
       {
         "key": "idle",
-        "frames": { "frames": [ 0, 1, 1, 2, 1, 1 ] },
-        "frameRate": 6
+        "frames": { "frames": [ 0, 1, 2, 1 ] },
+        "frameRate": 3
       }
     ]
   },

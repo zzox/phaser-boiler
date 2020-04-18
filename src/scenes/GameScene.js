@@ -42,6 +42,8 @@ export default class GameScene extends Scene {
     }
 
     this.updatePrevState()
+
+    this.items.map(item => item.update(delta))
   }
 
   dirFromInput () {

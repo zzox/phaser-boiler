@@ -7,14 +7,20 @@ export default class ItemSprite extends GameObjects.Sprite {
 
     if (canShock) {
       this.shocker = this.scene.add.sprite(x, y)
+      scene.add.existing(this.shocker)
+      this.shocker.setVisible(false)
+      this.shocker.on('animationcomplete', (animation) => {
+        if (animation.key === 'shock-once') {
+          this.shocker.setVisible(false)
+        }
+      })
     }
-    console.log(anim)
-    console.log(this.x, this.y)
+
     this.anims.play(anim)
   }
 
   moveTo (x, y) {
-    // TODO: tween
+    // TODO: bubbles for movement
     if (this.x !== x) {
       this.scene.tweens.add({
         targets: this,
@@ -34,5 +40,26 @@ export default class ItemSprite extends GameObjects.Sprite {
         repeat: 0
       })
     }
+  }
+
+  update () {
+    if (this.shocker) {
+      this.shocker.x = this.x
+      this.shocker.y = this.y
+    }
+  }
+
+  shock (delay) {
+    this.shocker.setVisible(true)
+    this.shocker.x = this.x
+    this.shocker.y = this.y
+    this.shocker.anims.delayedPlay(delay, 'shock-once')
+  }
+
+  shockRepeat (delay) {
+    this.shocker.setVisible(true)
+    this.shocker.x = this.x
+    this.shocker.y = this.y
+    this.shocker.anims.delayedPlay(delay, 'shock-repeat')
   }
 }
