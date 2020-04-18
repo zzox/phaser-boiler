@@ -1,5 +1,5 @@
 {
-  "diver": {
+  "player": {
     "anims": [
       {
         "key": "idle",
@@ -85,9 +85,13 @@
       {
         "key": "node-end",
         "frames": { "start": 19, "end": 19 }
-      },
+      }
+    ]
+  },
+  "supports": {
+    "anims": [
       {
-        "key": "up-down",
+        "key": "still",
         "frames": { "start": 20, "end": 20 }
       }
     ]
