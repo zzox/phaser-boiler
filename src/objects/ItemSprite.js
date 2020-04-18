@@ -15,7 +15,24 @@ export default class ItemSprite extends GameObjects.Sprite {
 
   moveTo (x, y) {
     // TODO: tween
-    this.x = x
-    this.y = y
+    if (this.x !== x) {
+      this.scene.tweens.add({
+        targets: this,
+        x: { from: this.x, to: x },
+        ease: 'Power1',
+        duration: 166,
+        repeat: 0
+      })
+    }
+
+    if (this.y !== y) {
+      this.scene.tweens.add({
+        targets: this,
+        y: { from: this.y, to: y },
+        ease: 'Power1',
+        duration: 166,
+        repeat: 0
+      })
+    }
   }
 }

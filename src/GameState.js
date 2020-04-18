@@ -34,6 +34,10 @@ export default class GameState {
     // check shock
       // win/shock condition
     // lose if moves are up
+
+    if (this.moves === this.tries) {
+      alert('lost!')
+    }
   }
 
   move (item, dir) {
@@ -70,7 +74,7 @@ export default class GameState {
     }
 
     if (tile.item) {
-      if (tile.item.immovable) {
+      if (!tile.item.movable) {
         return false
       }
 
@@ -119,21 +123,32 @@ export default class GameState {
             x,
             y,
             sprite,
-            type: 'movable',
+            movable: true,
             canDie: true,
             gravity: false
           }
           this.player = item
           break
         case 'pipe':
-          item = {
-            x,
-            y,
-            sprite,
-            type: 'movable',
-            canDie: false,
-            gravity: false,
-            dirs: [name.split('-')[1], name.split('-')[2]]
+          if (name.split('-')[1] === 'node') {
+            item = {
+              x,
+              y,
+              sprite,
+              movable: false,
+              canDie: false,
+              gravity: false
+            }
+          } else {
+            item = {
+              x,
+              y,
+              sprite,
+              movable: true,
+              canDie: false,
+              gravity: false,
+              dirs: [name.split('-')[1], name.split('-')[2]]
+            }
           }
           break
         case 'supports':
@@ -141,7 +156,7 @@ export default class GameState {
             x,
             y,
             sprite,
-            type: 'movable',
+            movable: false,
             canDie: true,
             gravity: false
           }
