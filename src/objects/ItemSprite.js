@@ -16,6 +16,6 @@ export default class ItemSprite extends GameObjects.Sprite {
   moveTo (x, y) {
     // TODO: tween
     this.x = x
-    this.y - y
+    this.y = y
   }
 }

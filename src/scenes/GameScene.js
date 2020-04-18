@@ -1,4 +1,4 @@
-import { Scene } from 'phaser'
+import { Scene, Input } from 'phaser'
 import State from '../GameState'
 import ItemSprite from '../objects/ItemSprite'
 
@@ -20,20 +20,86 @@ export default class GameScene extends Scene {
   }
 
   create () {
-
-    // make battlestate
     this.state = new State(this.levelData, this)
 
     this.cameras.main.setBackgroundColor('#0095e9')
-    // add keys
+
+    this.addKeys()
 
     // add title up top
+
     // pools for environment objects
-    // 
+    //
+
+    this.canMove = true 
+  }
+
+  update (time, delta) {
+    const dir = this.dirFromInput()
+    if (this.canMove && dir) {
+      console.log(dir)
+      this.state.movePlayer(dir)
+    }
+
+    this.updatePrevState()
+  }
+
+  dirFromInput () {
+    if (this.keys.right.isDown && !this.prevState.right) {
+      return 'right'
+    }
+
+    if (this.keys.left.isDown && !this.prevState.left) {
+      return 'left'
+    }
+
+    if (this.keys.up.isDown && !this.prevState.up) {
+      return 'up'
+    }
+
+    if (this.keys.down.isDown && !this.prevState.down) {
+      return 'down'
+    }
+
+    return null
+  }
+
+  updatePrevState () {
+    this.prevState = {
+      up: this.keys.up.isDown,
+      down: this.keys.down.isDown,
+      left: this.keys.left.isDown,
+      right: this.keys.right.isDown,
+      restart: this.keys.restart.isDown
+    }
   }
 
   createSprite (rest) {
-    this.items.push(new ItemSprite({ scene: this, ...rest }))
+    const spr = new ItemSprite({ scene: this, ...rest })
+
+    this.items.push(spr)
+
+    return spr
+  }
+
+  addKeys () {
+    const { UP, DOWN, LEFT, RIGHT, R } = Input.Keyboard.KeyCodes
+
+    this.keys = {
+      up: this.input.keyboard.addKey(UP),
+      down: this.input.keyboard.addKey(DOWN),
+      left: this.input.keyboard.addKey(LEFT),
+      right: this.input.keyboard.addKey(RIGHT),
+      restart: this.input.keyboard.addKey(R)
+    }
+
+    this.prevState = {
+      up: null,
+      down: null,
+      left: null,
+      right: null,
+      restart: null
+    }
   }
 
   resumeScene () {
@@ -42,5 +108,9 @@ export default class GameScene extends Scene {
 
   pauseScene () {
     this.scene.pause()
+  }
+
+  nextLevel () {
+
   }
 }

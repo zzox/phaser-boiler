@@ -18,20 +18,89 @@ export default class GameState {
     this.moves = 0
     this.createGrid()
     console.log(this.gridItems)
-    this.createChars(items)
+    this.createItems(items)
   }
 
-  move () {
+  movePlayer (dir) {
     // move char, increment if possible
       // move other items in way, if possible
+    const result = this.move(this.player, dir)
+
+    if (result) {
+      this.moves++
+    }
+
     // gravity effects
     // check shock
       // win/shock condition
-    this.moves++
     // lose if moves are up
   }
 
-  createChars (items) {
+  move (item, dir) {
+    const { x, y } = item
+
+    let newX, newY
+    switch (dir) {
+      case 'up':
+        newX = x
+        newY = y - 1
+        break
+      case 'down':
+        newX = x
+        newY = y + 1
+        break
+      case 'left':
+        newX = x - 1
+        newY = y
+        break
+      case 'right':
+        newX = x + 1
+        newY = y
+        break
+      default:
+        throw new Error('No dir in State.move()')
+    }
+
+    console.log(newX, newY)
+    const tile = this.getItemAt(newX, newY)
+    if (!tile) {
+      // TODO: Remove
+      console.log('oob')
+      return false
+    }
+
+    if (tile.item) {
+      if (tile.item.immovable) {
+        return false
+      }
+
+      const results = this.move(tile.item, dir)
+
+      if (!results) {
+        return false
+      }
+    }
+
+    item.x = newX
+    item.y = newY
+    tile.item = item
+
+    const oldTile = this.getItemAt(x, y, this.grid)
+    oldTile.item = null
+
+    item.sprite.moveTo(tile.xPos, tile.yPos)
+    return true
+  }
+
+  getItemAt (x, y) {
+    if (x < 0 || x >= GAME_WIDTH || y < 0 || y >= GAME_HEIGHT) {
+      return null
+    }
+
+    return this.gridItems[x][y]
+  }
+
+  createItems (items) {
     items.map(({ name, x, y }) => {
       const { xPos, yPos } = this.gridItems[x][y]
 
@@ -51,7 +120,8 @@ export default class GameState {
             y,
             sprite,
             type: 'movable',
-            canDie: true
+            canDie: true,
+            gravity: false
           }
           this.player = item
           break
@@ -62,6 +132,7 @@ export default class GameState {
             sprite,
             type: 'movable',
             canDie: false,
+            gravity: false,
             dirs: [name.split('-')[1], name.split('-')[2]]
           }
           break
@@ -71,7 +142,8 @@ export default class GameState {
             y,
             sprite,
             type: 'movable',
-            canDie: true
+            canDie: true,
+            gravity: false
           }
           break
       }
